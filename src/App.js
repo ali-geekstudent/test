@@ -1,25 +1,45 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useState } from 'react'
+import { useUserContact } from './useUserContact'
 
-function App() {
+const App = () => {
+  const [phone, setPhone] = useState('')
+  const [username, setUserName] = useState('')
+  const { contacts, removeContact, addContact } = useUserContact();
+  
+  console.log(contacts)
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div>
+      <div>
+        <h2>Список </h2>
+
+        <input
+          value={username}
+          onChange={(e) => setUserName(e.target.value)}
+          placeholder="Добавьте имя пользователя"
+        />
+        <input
+          value={phone}
+          onChange={(e) => setPhone(e.target.value)}
+          placeholder="Добавьте телефон номер"
+        />
+        <button onClick={() => {
+          addContact({ username, phone })
+        }}>Добавьте имя </button>
+
+        <ul>
+          {contacts.map((item) => (
+            <li key={item.id}>
+              {item.username}
+              -
+              {item.phone}
+              <button onClick={() => removeContact(item.id)}>Удалить</button>
+            </li>
+          ))}
+        </ul>
+      </div>
     </div>
-  );
+  )
 }
 
-export default App;
+export default App
