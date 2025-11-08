@@ -1,45 +1,64 @@
-import React, { useState } from 'react'
-import { useUserContact } from './useUserContact'
+import React, { useState } from 'react';
+import { useUserContact } from './useUserContact';
+import './App.css';
 
 const App = () => {
-  const [phone, setPhone] = useState('')
-  const [username, setUserName] = useState('')
-  const { contacts, removeContact, addContact } = useUserContact();
-  
-  console.log(contacts)
+  const { contacts, addContact, removeContact } = useUserContact();
+  const [form, setForm] = useState({ username: '', phone: '' });
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setForm((prev) => ({ ...prev, [name]: value }));
+  };
 
   return (
-    <div>
-      <div>
-        <h2>Список </h2>
+    <div className="app-container">
+      <div className="contacts-card">
+        <h2>Список контактов</h2>
 
-        <input
-          value={username}
-          onChange={(e) => setUserName(e.target.value)}
-          placeholder="Добавьте имя пользователя"
-        />
-        <input
-          value={phone}
-          onChange={(e) => setPhone(e.target.value)}
-          placeholder="Добавьте телефон номер"
-        />
-        <button onClick={() => {
-          addContact({ username, phone })
-        }}>Добавьте имя </button>
+        <div className="inputs">
+          <input
+            name="username"
+            value={form.username}
+            onChange={handleChange}
+            placeholder="Введите имя пользователя"
+          />
+          <input
+            name="phone"
+            value={form.phone}
+            onChange={handleChange}
+            placeholder="Введите номер телефона"
+          />
+          <button
+            className="add-btn"
+            onClick={() => {
+              if (!form.username.trim() || !form.phone.trim()) return;
+              addContact(form);
+              setForm({ username: '', phone: '' });
+            }}
+          >
+            Добавить контакт
+          </button>
+        </div>
 
         <ul>
-          {contacts.map((item) => (
-            <li key={item.id}>
-              {item.username}
-              -
-              {item.phone}
-              <button onClick={() => removeContact(item.id)}>Удалить</button>
+          {contacts.map(({ id, username, phone }) => (
+            <li key={id}>
+              <span>
+                <strong>{username}</strong> — {phone}
+              </span>
+              <button
+                className="delete-btn"
+                onClick={() => removeContact(id)}
+              >
+                Удалить
+              </button>
             </li>
           ))}
         </ul>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default App
+export default App;
